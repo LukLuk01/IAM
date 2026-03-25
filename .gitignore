@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenv
+venv/
+.env
+.env.*
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Secrets
+*.pem
+*.key
+*.crt
+secrets.json
+
+# Docker
+docker-compose.override.yml
+
+# Kubernetes
+*.kubeconfig
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE / system
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Node (jeśli używasz frontendu)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# Misc
+*.bak
+*.tmp
