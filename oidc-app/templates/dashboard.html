@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>✅ Zalogowano pomyślnie</h1>
+
+    <h3>Dane użytkownika:</h3>
+    <ul>
+        <li><b>Login:</b> {{ user.preferred_username }}</li>
+        <li><b>Email:</b> {{ user.email }}</li>
+        <li><b>Imię:</b> {{ user.given_name }}</li>
+        <li><b>Nazwisko:</b> {{ user.family_name }}</li>
+    </ul>
+
+    <a href="/logout">
+        <button>Wyloguj</button>
+    </a>
+</body>
+</html>
