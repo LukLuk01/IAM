@@ -1,46 +1,61 @@
 services:
   postgres:
-    image: postgres:15
-    container_name: keycloak-db
+    image: postgres:latest
+    container_name: keycloak-postgres
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - iam-network
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
-    command: start-dev --hostname=localhost
+    command: start-dev
     depends_on:
       - postgres
     ports:
-      - "8080:8080"
+      - "${KEYCLOAK_PORT}:8080"
+    env_file:
+      - .env
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: postgres
-      KC_DB_URL_DATABASE: keycloak
+      KC_DB_URL_DATABASE: ${POSTGRES_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
 
-  oidc-app:
-    build: ./oidc-app
-    ports:
-      - "5000:5000"
-    depends_on:
-      - keycloak
-    env_file:
-      - .env
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
 
-  saml-app:
-    build: ./saml-app
+    networks:
+      - iam-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
     ports:
-      - "5001:5001"
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
     depends_on:
       - keycloak
+    networks:
+      - iam-network
 
 volumes:
   postgres_data:
+    name: keycloak_postgres_data
+
+networks:
+  iam-network:
+    driver: bridge
